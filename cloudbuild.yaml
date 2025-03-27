@@ -1,0 +1,8 @@
+steps:
+  - name: 'gcr.io/cloud-builders/npm' # Usar NPM para instalar dependencias y construir la app
+    args: ['install']
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build'] # Construye la app React
+  - name: 'gcr.io/cloud-builders/docker' # Usa Docker para construir la imagen
+    args: ['build', '-t', 'gcr.io/pruebas-sotraser/encuesta-frontend', '.'] # Reemplaza frontend-app con nombre de imagen
+images: ['gcr.io/pruebas-sotraser/encuesta-frontend'] # Y reemplaza aquí también
