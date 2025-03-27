@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import FormularioEncuesta from './components/FormularioEncuesta';
 import FormularioEncuesta2 from './components/FormularioEncuesta2';
 
 

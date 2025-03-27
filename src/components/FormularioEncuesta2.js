@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Grid, Typography, Box, Container } from '@mui/material';
 import ComponenteEstrellas from './ComponenteEstrellas';
-import axios from 'axios';
+
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Sotraser_3.jpg'; 
 import backgroundImage2 from '../assets/Sotraser_3.jpg'; 
@@ -15,16 +15,7 @@ function FormularioEncuesta2() {
     const navigate = useNavigate();
     const { handleSubmit, control } = useForm();
 
-    const onSubmit = async (data) => {
-        try {
-            const respuesta = await axios.post('http://127.0.0.1:8000/encuesta/', data);
-            console.log(respuesta.data);
-            alert('Encuesta enviada con éxito');
-        } catch (error) {
-            console.error('Error al enviar la encuesta:', error);
-            alert('Error al enviar la encuesta');
-        }
-    };
+    
     const handleNavigate = () => {
         navigate('/FormularioEncuesta');
     };
@@ -76,7 +67,7 @@ function FormularioEncuesta2() {
             xl: '3rem', // Tamaño para extra large (desktops muy grandes)
         },
          }}>
-                 <form onSubmit={handleSubmit(onSubmit)} >
+                 <form>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Typography color="white" variant="h6" sx={{fontSize: {
