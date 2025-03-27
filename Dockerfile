@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copia el resto de los archivos del proyecto
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY . .
 
 # Construye la aplicación React para producción
 RUN npm run build
