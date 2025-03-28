@@ -1,8 +1,55 @@
 steps:
-  - name: 'gcr.io/cloud-builders/npm' # Usar NPM para instalar dependencias y construir la app
-    args: ['install']
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['run', 'build'] # Construye la app React
-  - name: 'gcr.io/cloud-builders/docker' # Usa Docker para construir la imagen
-    args: ['build', '-t', 'gcr.io/pruebas-sotraser/encuesta-frontend', '.'] # Reemplaza frontend-app con nombre de imagen
-images: ['gcr.io/pruebas-sotraser/encuesta-frontend'] # Y reemplaza aquí también
+  - name: gcr.io/cloud-builders/docker
+    id: Build
+    args:
+      - build
+      - '--no-cache'
+      - '-t'
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - .
+      - '-f'
+      - Dockerfile
+  - name: gcr.io/cloud-builders/docker
+    id: Push
+    args:
+      - push
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Deploy
+    args:
+      - '-c'
+      - |
+        # TODO: add secrets and env vars
+        # API_HOST=$(gcloud secrets versions access latest --secret="${_SERVICE_NAME}_api-host") &&
+        
+        gcloud run deploy $_SERVICE_NAME \
+          --platform=managed \
+          --image $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA \
+          --region $_DEPLOY_REGION \
+          --service-account $_CLOUD_RUN_SERVICE_ACCOUNT \
+          # --set-env-vars "API_HOST=$_API_HOST" \
+          --quiet \
+          --network=default \
+          --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID \
+      
+    entrypoint: bash
+images:
+  - >-
+    $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+options:
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _SERVICE_NAME: js-nj-encuesta-sotraser-front
+  _DEPLOY_REGION: us-central1
+  _AR_HOSTNAME: us-central1-docker.pkg.dev
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _AR_PROJECT_ID: pruebas-sotraser
+  _PLATFORM: managed
+  _BRANCH_NAME: main
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - js-nj-encuesta-sotraser-front
