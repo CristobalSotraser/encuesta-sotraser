@@ -10,7 +10,8 @@ import {
     Container,
     Snackbar, // Importar Snackbar
     Alert,    // Importar Alert
-    CircularProgress // Importar CircularProgress para indicador de carga
+    CircularProgress,
+    Divider // Importar CircularProgress para indicador de carga
 } from '@mui/material';
 import ComponenteEstrellas from './ComponenteEstrellas';
 
@@ -20,8 +21,11 @@ import logoSotraser from '../assets/Logo-blanco.png';
 
 function FormularioEncuesta2() {
     // const navigate = useNavigate();
-    const { handleSubmit, control, reset } = useForm({ // Obtener 'reset' de useForm
+    const { handleSubmit, control, reset, formState: { errors } } = useForm({ // Obtener 'reset' de useForm
         defaultValues: {
+            nombreCliente: '',
+            nombreContacto: '',
+            email: '',
             calidad_general: 5,
             puntualidad: 5,
             comunicacion: 5,
@@ -56,7 +60,7 @@ function FormularioEncuesta2() {
     // Función que se ejecuta al enviar el formulario
     const onSubmit = async (data) => {
         console.log("Datos del formulario a enviar:", data);
-        const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycbze-qhU_lFWeiDDA9fCfV63vPVvSXLQ8YaDf9lxlgecu2Iu1nKYWEdypSnypH2zSrFb/exec';
+        const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycbxjIFbWrq6DoWTuvGRY2zufWgTVX0c45gpVjQ61y3TiBjUk6Y5C87UcKIh5rZkcdD1x/exec';
     
         setIsSubmitting(true);
     
@@ -105,6 +109,27 @@ function FormularioEncuesta2() {
     // --- Breakpoints responsivos (sin cambios) ---
     const responsiveFontSize = { /* ... */ };
     const responsiveTitleSize = { /* ... */ };
+    const textFieldStyles = {
+        '& .MuiOutlinedInput-root': {
+            color: 'white',
+            '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.7)' },
+            '&:hover fieldset': { borderColor: 'white' },
+            '&.Mui-focused fieldset': { borderColor: 'white' },
+            '& input::placeholder': { color: 'rgba(255, 255, 255, 0.7)', opacity: 1 },
+        },
+        '& .MuiInputBase-input': { color: 'white' }, // Texto al escribir
+        '& .MuiInputLabel-root': { color: 'rgba(255, 255, 255, 0.7)'}, // Color del Label
+        '& .MuiInputLabel-root.Mui-focused': { color: 'white'}, // Color del Label enfocado
+         '& .MuiFormHelperText-root': { // Color del texto de error/ayuda
+             color: '#ffcdd2', // Rojo claro
+             marginLeft: 0
+         },
+         '& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': { // Borde rojo en error
+             borderColor: '#f44336',
+         },
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderRadius: 1,
+    };
 
     return (
         <Box
@@ -130,10 +155,10 @@ function FormularioEncuesta2() {
             />
 
             <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <img src={logoSotraser} alt="Logo de Sotraser" style={{ width: '200px', maxWidth: '80%', marginTop:'50px', marginBottom:'30px' }} /> {/* Ajuste leve al tamaño del logo */}
+                <img src={logoSotraser} alt="Logo de Sotraser" style={{ width: '100%', marginTop:'50px', marginBottom:'30px' }} /> {/* Ajuste leve al tamaño del logo */}
 
                 {/* --- Títulos e Instrucciones (sin cambios) --- */}
-                <Typography variant="h3" align="center" color="white" gutterBottom sx={{ fontSize: responsiveTitleSize, fontWeight: 'bold' }}>
+                <Typography variant="h3" align="center" color="white" gutterBottom sx={{ fontSize: { xs: '1.7rem', md: '3rem'}, fontWeight: 'bold' }}>
                      Encuesta de Satisfacción del Cliente
                 </Typography>
                 <Typography variant="h5" align="center" color="white" gutterBottom sx={{ fontSize: { xs: '1.2rem', md: '1.5rem'}, mb: 1 }}>
@@ -145,7 +170,7 @@ function FormularioEncuesta2() {
 
                 {/* Contenedor del Formulario */}
                 <Container sx={{
-                     backgroundColor: 'rgba(18, 78, 131, 0.4)',
+                     backgroundColor: 'rgba(23, 108, 182, 0.4)',
                      padding: { xs: 2, md: 4 },
                      borderRadius: 2,
                      marginBottom: 4,
@@ -153,6 +178,78 @@ function FormularioEncuesta2() {
                 }}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                                <Typography color="white" variant="h6" sx={{ fontSize: responsiveFontSize, mb: 2, fontWeight: 'medium' }}>
+                                    Datos del Encuestado (Obligatorio)
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="nombreCliente"
+                                    control={control}
+                                    rules={{ required: 'El nombre de la empresa es obligatorio' }}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Nombre del Cliente"
+                                            variant="outlined"
+                                            fullWidth
+                                            required
+                                            error={!!error}
+                                            helperText={error ? error.message : ''}
+                                            sx={textFieldStyles} // Aplica estilos
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}> {/* Ocupa mitad en pantallas pequeñas o más */}
+                                <Controller
+                                    name="nombreContacto"
+                                    control={control}
+                                    rules={{ required: 'Su nombre es obligatorio' }}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Nombre del Contacto"
+                                            variant="outlined"
+                                            fullWidth
+                                            required
+                                            error={!!error}
+                                            helperText={error ? error.message : ''}
+                                            sx={textFieldStyles} // Aplica estilos
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}> {/* Ocupa mitad en pantallas pequeñas o más */}
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    rules={{
+                                        required: 'El correo electrónico es obligatorio',
+                                        pattern: {
+                                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                            message: 'Ingrese un correo electrónico válido'
+                                        }
+                                    }}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Email del Contacto"
+                                            variant="outlined"
+                                            type="email"
+                                            fullWidth
+                                            required
+                                            error={!!error}
+                                            helperText={error ? error.message : ''}
+                                            sx={textFieldStyles} // Aplica estilos
+                                        />
+                                    )}
+                                />
+                            </Grid>
 
                             {/* --- Preguntas 1 a 6 (sin cambios en la lógica, solo el Controller y Typography) --- */}
                              {/* --- Pregunta 1 --- */}
@@ -170,7 +267,7 @@ function FormularioEncuesta2() {
                              {/* --- Pregunta 2 --- */}
                              <Grid item xs={12}>
                                  <Typography color="white" variant="h6" sx={{ fontSize: responsiveFontSize, mb: 2, fontWeight: 'medium' }}>
-                                     2. Puntúe los siguientes aspectos de nuestro servicio:
+                                     2. Califique los siguientes aspectos de nuestro servicio:
                                  </Typography>
                                  <Grid container spacing={1.5} sx={{ pl: { xs: 0, md: 2 }}}>
                                     <Grid item xs={12} sm={6} md={12}>
@@ -200,7 +297,7 @@ function FormularioEncuesta2() {
                              {/* --- Pregunta 3 --- */}
                               <Grid item xs={12}>
                                  <Typography color="white" variant="h6" sx={{ fontSize: responsiveFontSize, mb: 2, fontWeight: 'medium' }}>
-                                     3. Evaluación de nuestra operación y seguridad:
+                                     3. Evalúe los siguientes aspectos de nuestra operación y seguridad:
                                  </Typography>
                                  <Grid container spacing={1.5} sx={{ pl: { xs: 0, md: 2 }}}>
                                       <Grid item xs={12} sm={6} md={12}>
