@@ -23,7 +23,7 @@ function FormularioEncuesta2() {
     // const navigate = useNavigate();
     const { handleSubmit, control, reset, formState: { errors } } = useForm({ // Obtener 'reset' de useForm
         defaultValues: {
-            nombreCliente: '',
+            nombreEmpresa: '',
             nombreContacto: '',
             email: '',
             calidad_general: 5,
@@ -60,7 +60,7 @@ function FormularioEncuesta2() {
     // Función que se ejecuta al enviar el formulario
     const onSubmit = async (data) => {
         console.log("Datos del formulario a enviar:", data);
-        const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycbxjIFbWrq6DoWTuvGRY2zufWgTVX0c45gpVjQ61y3TiBjUk6Y5C87UcKIh5rZkcdD1x/exec';
+        const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycby5PQyiT_JkDXYFt8riETMM0EauejjXrCRRZ95ApM-T_nzehUykiapvu_DjI_DuQuew/exec';
     
         setIsSubmitting(true);
     
@@ -186,13 +186,13 @@ function FormularioEncuesta2() {
 
                             <Grid item xs={12}>
                                 <Controller
-                                    name="nombreCliente"
+                                    name="nombreEmpresa"
                                     control={control}
                                     rules={{ required: 'El nombre de la empresa es obligatorio' }}
                                     render={({ field, fieldState: { error } }) => (
                                         <TextField
                                             {...field}
-                                            label="Nombre del Cliente"
+                                            label="Nombre de la Empresa"
                                             variant="outlined"
                                             fullWidth
                                             required
