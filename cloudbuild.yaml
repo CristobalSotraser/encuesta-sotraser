@@ -28,10 +28,10 @@ steps:
           --platform=managed \
           --image $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA \
           --region $_DEPLOY_REGION \
+          --port 80 \
           # --service-account $_CLOUD_RUN_SERVICE_ACCOUNT \
           --set-env-vars "PORT=80" \
           --quiet \
-          --port 80 \
           --network=default \
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID \
       
