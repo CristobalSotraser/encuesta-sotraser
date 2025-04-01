@@ -1,4 +1,4 @@
-FROM node:alpine as build-deps
+FROM node:alpine AS build-deps
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
