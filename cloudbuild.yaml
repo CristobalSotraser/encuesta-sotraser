@@ -23,16 +23,17 @@ steps:
       - |
         # TODO: add secrets and env vars
         # API_HOST=$(gcloud secrets versions access latest --secret="${_SERVICE_NAME}_api-host") &&
-        #           # --service-account $_CLOUD_RUN_SERVICE_ACCOUNT \
+        # UNUSED gcloud run deploy args:
+        # --service-account $_CLOUD_RUN_SERVICE_ACCOUNT \
+        # --set-env-vars "ENV_VAR=XYZ" \
 
-        
+
         gcloud run deploy $_SERVICE_NAME \
           --platform=managed \
           --image $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA \
           --region $_DEPLOY_REGION \
           --allow-unauthenticated \
           --port 80 \
-          --set-env-vars "PORT=80" \
           --quiet \
           --network=default \
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID \
