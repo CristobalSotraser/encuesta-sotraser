@@ -1,0 +1,6 @@
+github:
+  owner: "CristobalSotraser"
+  name: "encuesta-sotraser.git"
+  push: # For branch-based triggers
+    branch: "^deploy$"
+filename: "cloudbuild.yaml"
