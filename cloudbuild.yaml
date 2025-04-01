@@ -23,6 +23,8 @@ steps:
       - |
         # TODO: add secrets and env vars
         # API_HOST=$(gcloud secrets versions access latest --secret="${_SERVICE_NAME}_api-host") &&
+        #           # --service-account $_CLOUD_RUN_SERVICE_ACCOUNT \
+
         
         gcloud run deploy $_SERVICE_NAME \
           --platform=managed \
@@ -30,7 +32,6 @@ steps:
           --region $_DEPLOY_REGION \
           --allow-unauthenticated \
           --port 80 \
-          # --service-account $_CLOUD_RUN_SERVICE_ACCOUNT \
           --set-env-vars "PORT=80" \
           --quiet \
           --network=default \
