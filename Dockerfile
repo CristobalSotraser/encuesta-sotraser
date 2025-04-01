@@ -1,10 +1,12 @@
-# Usa una imagen base de Nginx ligera
-FROM nginx:alpine
+FROM node:alpine as build-deps
+WORKDIR /usr/src/app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . ./
+RUN npm run build
 
-# Copia los archivos de la carpeta 'build' al directorio web de Nginx
-COPY build/ /usr/share/nginx/html
-
-# Expón el puerto 80 (puerto por defecto de Nginx)
+# Nginx
+FROM nginx:1.12-alpine
+COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
-
-# El comando por defecto de la imagen nginx ya inicia el servidor
+CMD ["nginx", "-g", "daemon off;"]
