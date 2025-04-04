@@ -8,7 +8,8 @@ function App() {
   return (
       <Router>
           <Routes>
-            <Route path="/" element={<FormularioEncuesta2 />} />
+            <Route path="/" element={<Navigate to="/EncuestaCliente2025" replace />} />
+            <Route path="/EncuestaCliente2025/" element={<FormularioEncuesta2 />} />
           </Routes>
       </Router>
   );
