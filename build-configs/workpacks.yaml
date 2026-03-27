@@ -1,0 +1,40 @@
+steps:
+  - name: 'gcr.io/k8s-skaffold/pack'  # Uses the 'pack' CLI tool in a container
+    id: 'build-image'
+    args:
+      - 'build'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA'  # Image name with tag
+      - '--builder'
+      - 'gcr.io/buildpacks/builder:v1' # Specifies the Buildpack builder to use
+    env:
+      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID' # Sets Project ID as an environment variable
+  - name: 'gcr.io/cloud-builders/docker' # Uses the Docker builder
+    id: 'push-image'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA' # Pushes the tagged image
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'  # Cloud SDK for gcloud
+    id: 'deploy-cloud-run'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_SERVICE_NAME'  # Replace with your service name
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA' # Use the built image
+      - '--region'
+      - '$_DEPLOY_REGION' # Replace with your desired region
+      - '--platform'
+      - 'managed' #Important for Cloud Run
+    # Optional: Add other Cloud Run deployment flags here
+    # e.g., --allow-unauthenticated, --memory, --cpu, etc.
+images:
+  - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA' # Lists images to be pushed
+substitutions:
+  _SERVICE_NAME: js-nj-encuesta-sotraser-front
+  _DEPLOY_REGION: us-central1
+  _AR_HOSTNAME: us-central1-docker.pkg.dev
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _AR_PROJECT_ID: pruebas-sotraser
+  _PLATFORM: managed
+  _BRANCH_NAME: main
